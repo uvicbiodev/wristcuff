@@ -8,7 +8,7 @@ A git GUI is unnecessary and can be used from command line.
 Git docs can be found here: https://git-scm.com/docs/
 
 ####To initialize this git repo on your local computer:
-Enter 'git clone https://github.com/Erasyn/uvic-biodev UVicBioDev' into the command line.
+Enter 'git clone https://github.com/uvicbiodev/wristcuff' into the command line.
 
 Now the repository should be set up on your computer.
 
