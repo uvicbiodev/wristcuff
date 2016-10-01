@@ -12,6 +12,7 @@
 LiquidCrystal lcd(8, 9, 4, 5, 6, 7);
 
 
+int pulsePin = 1;
 
 // Volatile Variables, used in the interrupt service routine!
 volatile int BPM;                   // int that holds raw Analog in 0. updated every 2mS
@@ -25,7 +26,6 @@ volatile boolean QS = false;        // becomes true when Arduoino finds a beat.
 
 void setup(){
   
-  Serial.begin(9600);             // we agree to talk fast!
   interruptSetup();               // sets up to read Pulse Sensor signal every 2mS  
 
   lcd.begin(16, 2);              // start the library
@@ -35,7 +35,7 @@ void setup(){
 }
 
 
-//  Where the Magic Happens
+
 void loop(){
         
     
