@@ -24,6 +24,6 @@ To upload changes made to files we will use
 
 BioDev identified the utility of an all-in-one device that could monitor a patient’s heart rate, blood pressure, and blood oxygen saturation levels. 
 A device like this, if portable and easy to use, would find application with emergency response personnel, as well as home monitoring. 
-To increase accesibility, the device is designed to incorporate wireless data sharing technology and smartphone integration.
+To increase accesibility, the device will be designed to incorporate wireless data sharing technology and smartphone integration.
 
 
