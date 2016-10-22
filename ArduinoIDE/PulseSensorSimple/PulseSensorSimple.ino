@@ -18,6 +18,7 @@ int pulsePin = 1;
 volatile int BPM;                   // calculated heart rate, beats per minute
 volatile int Signal;                // incoming raw data
 volatile int IBI = 600;             // int that holds the time interval between beats 
+volatile bool Pulse = false;
 //volatile int powerPin = A2;
 
 
@@ -50,21 +51,29 @@ void loop(){
   lcd.print(BPM);
 
 
-  /*
-  //Serial.print("Signal: ");
-  Serial.print(Signal);                         // serial print serial for testing
-  Serial.print("\n");
-
-   delay(2);
-  */
+  
   
   Serial.print("BPM: ");
   Serial.print(BPM);
   Serial.print("\n");
 
+ 
+  
+
+  /*
+  //Serial.print("Signal: ");
+  Serial.print(Signal);                         // serial print serial for testing
+  Serial.print("\n");
+  Serial.print("\n");
+  Serial.print(IBI);                         // serial print serial for testing
+  Serial.print("\n");
+
+
+  delay(2);
+  */
   
        
-  delay(200); 
+  delay(100); 
 
   
 }
