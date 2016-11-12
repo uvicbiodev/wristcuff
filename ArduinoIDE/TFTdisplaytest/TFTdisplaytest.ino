@@ -1,7 +1,8 @@
 // Display Test
 // Test several Display Adafruit_GFX functions
 // for 1.8" TFT LCD Color Display (SainSmart).
-// Hans Luijten, Tweaking4All.com
+// Modified from this website
+// Hans Luijten, http://www.tweaking4all.com/hardware/arduino/sainsmart-arduino-color-display/
 
 // Init pins
 #define sclk 13
@@ -28,42 +29,45 @@ void setup() {
   // If your TFT's plastic wrap has a Green Tab, use the following:
   tft.initR(INITR_GREENTAB); // initialize a ST7735R chip, green tab  
   Serial.println("setup() - Init Completed");
+
+  // Clear screen
+  Serial.println("Clear screen with BLACK");
+  tft.fillScreen(ST7735_BLACK);
+
+  // BIODEV splash screen
+  Serial.println("Splash Title");
+  tft.setTextSize(2);
+  tft.setCursor(0, 10);
+  tft.setTextColor(ST7735_WHITE);
+  tft.print("BioDEV");
+  tft.setCursor(76, 10);
+  tft.setTextColor( tft.Color565( 0xFF, 0x77, 0x00) );
+  tft.print("DEMO");
+  delay(2000);
+
+  // Draw some circles
+  Serial.println("Drawing biodev logo");
+  tft.drawCircle(60,90,50,tft.Color565( 0xFF, 0x77, 0x00));
+  tft.drawCircle(60,90,51,tft.Color565( 0xFF, 0x77, 0x00));
+  tft.drawCircle(60,90,52,tft.Color565( 0xFF, 0x77, 0x00));
+  tft.drawCircle(60,90,53,tft.Color565( 0xFF, 0x77, 0x00));
+  tft.fillRect(10,85,100,10, tft.Color565( 0xFF, 0x77, 0x00));
+  tft.fillRect(55,40,10,100, tft.Color565( 0xFF, 0x77, 0x0));
+  delay(4000);
+
+  // Clear screen
+  Serial.println("Clear screen with BLACK");
+  tft.fillScreen(ST7735_BLACK);
 }
+
+
+
 
 void loop() {
   // This keeps repeating ...
   Serial.println("loop() - starting (again) ...");
 
-  // Clear screen
-  Serial.println("Fill screen with BLACK");
-  tft.fillScreen(ST7735_BLACK);
-
-  // Hello
-  Serial.println("Hello message");
   tft.setTextSize(1);
-  tft.setCursor(0, 50);
-  tft.setTextColor(ST7735_WHITE);
-  tft.print("   BioDEV ");
-  tft.setTextColor( tft.Color565( 0xFF, 0x00, 0x00) );
-  tft.print(" TEST ");
-  delay(3000);
-
-  // Clear screen
-  Serial.println("Fill screen with BLACK");
-  tft.fillScreen(ST7735_BLACK);
-
-
-  // Draw some circles
-  Serial.println("Draw some circles, with delay between open and filled cicle");
-  tft.drawCircle(60,70,50,ST7735_RED);
-  tft.fillRect(10,65,100,10, ST7735_RED);
-  tft.fillRect(55,20,10,100, ST7735_RED);
-  delay(3000);
-
-  // Clear screen
-  Serial.println("Fill screen with BLACK");
-  tft.fillScreen(ST7735_BLACK);
-
   // Draw rectangles with rounded corners for a dialog
   // Big box
   Serial.println("Display BPM info");
@@ -88,30 +92,21 @@ void loop() {
   tft.print("no concern");
 
   
-   tft.setCursor(22, 38);
-   tft.print("Current : 76");
-   delay(50);
-   tft.setCursor(22, 38);
-   tft.print("Current : 73");
-   delay(50);
-   tft.setCursor(22, 38);
-   tft.print("Current : 78");
-   delay(50);
-   tft.setCursor(22, 38);
-   tft.print("Current : 79");
-   delay(50);
-   tft.setCursor(22, 38);
-   tft.print("Current : 68");
-   delay(50);
-   tft.setCursor(22, 38);
-   tft.print("Current : 89");
-   delay(50);
   
-  delay(6000);
+  for(int i=0; i<10; i++){
 
+    String bpmVal = String(75-i);
+    
+    //clears the current bpm reading 
+    tft.fillRect(72,37,25,10,tft.Color565( 0xC4, 0xC4, 0xC4));
 
-  // Clear screen
-  Serial.println("Fill screen with BLACK");
-  tft.fillScreen(ST7735_BLACK);
+    tft.setCursor(22, 38);
+    tft.print("Current : " + bpmVal);
+
+    delay(1000);
+    
+
+  }
+
 
 }
