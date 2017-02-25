@@ -25,6 +25,7 @@ volatile boolean QS = false;        // becomes true when Arduoino finds a beat.
 int AverageBPM[10] = {70};
 int SummedAverage;
 
+int count = 0;
 
 void setup(){
  
@@ -85,7 +86,7 @@ void setup(){
 
 void loop(){
 
-
+  
     
   if (QS == true){     // A Heartbeat Was Found
                        // BPM and IBI have been Determined
@@ -115,17 +116,18 @@ void loop(){
       tft.setCursor(22, 38);
       tft.print("Current : " + bpmVal);
 
-
+      /*
       tft.fillRect(72,47,30,10,tft.Color565( 0xC4, 0xC4, 0xC4));
 
       tft.setCursor(22, 48);
       tft.print("Average: " + AveBPM);
+      */
 
     
       QS = false;                      // reset the Quantified Self flag for next time    
   }
      
-  
+
   delay(20);                             //  take a break
 }
 
