@@ -1,6 +1,9 @@
 # UVic BioDev
 This is a general repo for the wrist cuff project.
 
+## Folder Structure
+Testing folder contains all the files used for individual component testing. Stable contains currently up to date code that is being implemented onto the final design.
+
 ## Setup
 Git can be downloaded at: https://git-scm.com/downloads
 A git GUI is unnecessary and can be used from command line.
