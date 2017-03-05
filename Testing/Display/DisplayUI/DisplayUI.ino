@@ -1,3 +1,6 @@
+// BioDEV Display Final UI Testing
+// March 2017
+
 
 // Init Display pins
 #define sclk 13
@@ -31,6 +34,7 @@ void setup(){
   tft.fillScreen(ST7735_BLACK);     // fill screen black
 
   SplashScreen();                   // display the splashscreen
+  delay(2000);
   MainUI();                         // display the main output UI
   
 }
@@ -41,22 +45,23 @@ void SplashScreen(){
   
   Serial.println("Splash Title");
   tft.setTextSize(2);
-  tft.setCursor(0, 10);
+  tft.setCursor(15, 10);
   tft.setTextColor(ST7735_WHITE);
   tft.print("BioDev");
-  tft.setCursor(76, 10);
   tft.setTextColor( tft.Color565( 0xFF, 0x77, 0x00) );
-  tft.print("DEMO");
+  tft.print(" DEMO");
   delay(2000);
 
   Serial.println("Drawing biodev logo");
-  tft.drawCircle(60,90,50,tft.Color565( 0xFF, 0x77, 0x00));
-  tft.drawCircle(60,90,51,tft.Color565( 0xFF, 0x77, 0x00));
-  tft.drawCircle(60,90,52,tft.Color565( 0xFF, 0x77, 0x00));
-  tft.drawCircle(60,90,53,tft.Color565( 0xFF, 0x77, 0x00));
-  tft.fillRect(10,85,100,10, tft.Color565( 0xFF, 0x77, 0x00));
-  tft.fillRect(55,40,10,100, tft.Color565( 0xFF, 0x77, 0x0));
+  tft.drawCircle(80,80,40,tft.Color565( 0xFF, 0x77, 0x00));
+  tft.drawCircle(80,80,41,tft.Color565( 0xFF, 0x77, 0x00));
+  tft.drawCircle(80,80,42,tft.Color565( 0xFF, 0x77, 0x00));
+  tft.drawCircle(80,80,43,tft.Color565( 0xFF, 0x77, 0x00));
+  tft.drawCircle(80,80,44,tft.Color565( 0xFF, 0x77, 0x00));
+  tft.fillRect(40,75,80,10, tft.Color565( 0xFF, 0x77, 0x00));
+  tft.fillRect(75,40,10,80, tft.Color565( 0xFF, 0x77, 0x0));
   delay(4000);
+
 
   // Clear screen
   Serial.println("Clear screen with BLACK");
@@ -92,7 +97,7 @@ void MainUI(){
   
 }
 
-
+/*
 
 void UpdateDisplayValues(){
 
@@ -152,7 +157,7 @@ void UpdateDisplayValues(){
 
   
 }
-
+*/
 
 
 
@@ -165,7 +170,7 @@ void loop(){
   diastolic = random(50,110);
   batteryPercent = random(0,100);
 
-  UpdateDisplayValues();
+  //UpdateDisplayValues();
      
   delay(2000);                             
 }
