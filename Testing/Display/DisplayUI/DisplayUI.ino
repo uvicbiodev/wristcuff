@@ -22,7 +22,7 @@ int BPM;                    // beats per minute
 int SPO2;                   // saturation of peripheral oxygen
 int systolic;               // systolic blood pressure
 int diastolic;              // diastolic blood pressure
-boolean bluetooth = false;  // bluetooth boolean true=connected false=otherwise
+boolean bluetooth = true;  // bluetooth boolean true=connected false=otherwise
 int batteryPercent;         // battery percentage (0-100)
 
 void setup(){
@@ -34,7 +34,6 @@ void setup(){
   tft.fillScreen(ST7735_BLACK);     // fill screen black
 
   SplashScreen();                   // display the splashscreen
-  delay(2000);
   MainUI();                         // display the main output UI
   
 }
@@ -50,7 +49,7 @@ void SplashScreen(){
   tft.print("BioDev");
   tft.setTextColor( tft.Color565( 0xFF, 0x77, 0x00) );
   tft.print(" DEMO");
-  delay(2000);
+  //delay(2000);
 
   Serial.println("Drawing biodev logo");
   tft.drawCircle(80,80,40,tft.Color565( 0xFF, 0x77, 0x00));
@@ -60,7 +59,7 @@ void SplashScreen(){
   tft.drawCircle(80,80,44,tft.Color565( 0xFF, 0x77, 0x00));
   tft.fillRect(40,75,80,10, tft.Color565( 0xFF, 0x77, 0x00));
   tft.fillRect(75,40,10,80, tft.Color565( 0xFF, 0x77, 0x0));
-  delay(4000);
+  //delay(4000);
 
 
   // Clear screen
@@ -75,29 +74,30 @@ void MainUI(){
   // no values are displayed yet, just the text and outline boxes 
   
   tft.setTextSize(1);
+  tft.setTextColor( tft.Color565( 0xFF, 0x77, 0x00) );
   
-  tft.drawRect(0,0,53,64,tft.Color565( 0x70, 0x80, 0x90));     // SPO2 rectangle outline  
-  tft.setCursor(5,5);
+  tft.drawRect(0,1,53,64,tft.Color565( 0x70, 0x80, 0x90));     // SPO2 rectangle outline  
+  tft.setCursor(10,5);
   tft.println("SPO2");
   
-  tft.drawRect(54,0,53,64,tft.Color565( 0x70, 0x80, 0x90));    // BPM rectangle outline
-  tft.setCursor(59,5);
+  tft.drawRect(53,1,53,64,tft.Color565( 0x70, 0x80, 0x90));    // BPM rectangle outline
+  tft.setCursor(70,5);
   tft.println("BPM");
   
-  tft.drawRect(107,0,53,64,tft.Color565( 0x70, 0x80, 0x90));   // BP rectangle outline
-  tft.setCursor(112,5);
+  tft.drawRect(106,1,53,64,tft.Color565( 0x70, 0x80, 0x90));   // BP rectangle outline
+  tft.setCursor(130,5);
   tft.println("BP");
 
 
-  tft.drawRect(0,108,53,20,tft.Color565( 0x70, 0x80, 0x90));    // bluetooth rectangle outline
+  tft.drawRect(0,108,80,20,tft.Color565( 0x70, 0x80, 0x90));    // bluetooth rectangle outline
   //display bluetooth symbol from picture on sd card?
   
-  tft.drawRect(107,108,53,20,tft.Color565( 0x70, 0x80, 0x90));  // battery rectangle outline
+  tft.drawRect(106,108,53,20,tft.Color565( 0x70, 0x80, 0x90));  // battery rectangle outline
   //draw battery with small rectangles of varying colour?
   
 }
 
-/*
+
 
 void UpdateDisplayValues(){
 
@@ -106,58 +106,79 @@ void UpdateDisplayValues(){
   // to be refreshed then the new value can be displayed
   
   tft.setTextSize(2);
+  tft.setTextColor(ST7735_WHITE);
   
   // Updating SPO2, BPM, and BP
-  tft.fillRect(x,y,width,height,ST7735_BLACK);
-  tft.setCursor(x,y);
+  tft.fillRect(5,15,40,45,ST7735_BLACK);
+  tft.setCursor(13,30);
   String SPO2str = String(SPO2);
   tft.println(SPO2str);
 
-  tft.fillRect(x,y,width,height,ST7735_BLACK);
-  tft.setCursor(x,y);
+  tft.fillRect(60,15,40,45,ST7735_BLACK);
   String BPMstr = String(BPM);
+  if(BPMstr.length() == 3){
+    tft.setCursor(61,30);
+  }else{
+    tft.setCursor(69,30);
+  }
   tft.println(BPMstr);
 
-  tft.fillRect(x,y,width,height,ST7735_BLACK);
-  tft.setCursor(x,y);
+  tft.fillRect(113,15,40,45,ST7735_BLACK);
+  tft.setTextSize(1);
   String sysstr = String(systolic);
-  tft.println(sysstr);
-
-  tft.fillRect(x,y,width,height,ST7735_BLACK);
-  tft.setCursor(x,y);
   String diastr = String(diastolic);
+  if(sysstr.length() == 3){
+    tft.setCursor(120,25);
+  }else{
+    tft.setCursor(125,25);
+  }
+  tft.println(sysstr);
+  if(diastr.length() == 3){
+    tft.setCursor(120,40);
+  }else{
+    tft.setCursor(125,40);
+  }
   tft.println(diastr);
+  tft.fillRect(117,35,30,2,ST7735_WHITE);
+
 
   // Updating Bluetooth
+  tft.setTextSize(1);
+  tft.fillRect(2,110,76,16,ST7735_BLACK);
   if(bluetooth == false){
-    tft.fillRect(x,y,width,height,ST7735_BLACK);
-    tft.setCursor(x,y);
+    tft.setCursor(4,114);
     tft.println("Disconnected");
   }
   else{
-    tft.fillRect(x,y,width,height,ST7735_BLACK);
-    tft.setCursor(x,y);
+    tft.setCursor(10,114);
     tft.println("Connected");
   }
-
+  
 
   // Updating battery percentage indicator
-  String batstr = String(batteryPercent);
-  tft.println(batstr);
-  if(batterPercent > 75){
+  tft.fillRect(108,110,48,16,ST7735_BLACK);
+  tft.drawRoundRect(115,110,30,15,5,ST7735_WHITE);
+  tft.drawRoundRect(145,115,3,5,1,ST7735_WHITE);
+  //tft.setCursor(x,y);
+  //String batstr = String(batteryPercent);
+  //tft.println(batstr);
+  if(batteryPercent > 75){
     // draw full battery green
+    tft.fillRoundRect( 117, 111, 25, 13, 4,ST7735_GREEN  );
   }
   else if(batteryPercent > 25){
     // draw half battery yellow
+    tft.fillRoundRect( 117, 111, 15, 13, 4,ST7735_YELLOW  );
   }
   else{
     // draw empty battery red
+    tft.fillRoundRect( 117, 111, 5, 13, 4,ST7735_RED  );
   }
-
+  
 
   
 }
-*/
+
 
 
 
@@ -170,7 +191,13 @@ void loop(){
   diastolic = random(50,110);
   batteryPercent = random(0,100);
 
-  //UpdateDisplayValues();
+  if(random(0,2) == 1){
+    bluetooth = true;
+  }else{
+    bluetooth = false;
+  }
+
+  UpdateDisplayValues();
      
   delay(2000);                             
 }
