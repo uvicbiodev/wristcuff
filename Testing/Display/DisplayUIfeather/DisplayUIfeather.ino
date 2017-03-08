@@ -1,4 +1,5 @@
 // BioDEV Display Final UI Testing
+// using the feather board
 // March 2017
 
 
@@ -7,7 +8,7 @@
 #define mosi 11
 #define cs   10
 #define dc   9
-#define rst  8 
+#define rst  6 
 
 //TFT display libraries
 #include <Adafruit_GFX.h>    // Core graphics library
