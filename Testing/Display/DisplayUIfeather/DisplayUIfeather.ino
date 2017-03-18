@@ -4,8 +4,8 @@
 
 
 // Init Display pins
-#define sclk 13
-#define mosi 11
+#define sclk 15
+#define mosi 16
 #define cs   10
 #define dc   9
 #define rst  6 
@@ -31,7 +31,7 @@ void setup(){
  
   Serial.begin(9600);      
   
-  tft.initR(INITR_GREENTAB);        // initialize a ST7735R chip, green tab
+  tft.initR(INITR_REDTAB);        // initialize a ST7735R chip, orange tab
   tft.setRotation(1);               // rotate the screen 90 degrees
   tft.fillScreen(ST7735_BLACK);     // fill screen black
 

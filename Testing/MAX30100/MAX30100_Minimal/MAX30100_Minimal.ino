@@ -30,7 +30,7 @@ uint32_t tsLastReport = 0;
 // Callback (registered below) fired when a pulse is detected
 void onBeatDetected()
 {
-    Serial.println("Beat!");
+    //Serial.println("Beat!");
 }
 
 void setup()
@@ -51,13 +51,17 @@ void loop()
     // Asynchronously dump heart rate and oxidation levels to the serial
     // For both, a value of 0 means "invalid"
     if (millis() - tsLastReport > REPORTING_PERIOD_MS) {
-        Serial.print("Heart rate:");
+        //Serial.print("Heart rate:");
         Serial.print(pox.getHeartRate());
-        Serial.print("bpm / SpO2:");
+        //Serial.print("bpm / SpO2:");
+        Serial.print(",");
         Serial.print(pox.getSpO2());
-        Serial.print("% / temp:");
+        //Serial.print("\n");
+        //Serial.print("% / temp:");
+        //Serial.print(",");
         //Serial.print(pox.getTemperature());
-        Serial.println("C");
+        Serial.print("\n");
+        //Serial.println("C");
 
         tsLastReport = millis();
     }

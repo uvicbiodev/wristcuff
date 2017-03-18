@@ -88,6 +88,7 @@ int heart_rate = 0;
 int BP_num = 0;
 int BP_denom = 0;
 int percent_O2 = 0;
+int last_heart_rate = 0;
 
 // Callback (registered below) fired when a pulse is detected
 void onBeatDetected()
@@ -180,17 +181,21 @@ void loop(void)
     // Asynchronously dump heart rate and oxidation levels to the serial
     // For both, a value of 0 means "invalid"
     if (millis() - tsLastReport > REPORTING_PERIOD_MS) {
-        int heart_rate = pox.getHeartRate();
-        int BP_num = random(90, 200);
-        int BP_denom = random(60, 120);
-        int percent_O2 = pox.getSpO2();
-  
+        heart_rate = pox.getHeartRate();
+        Serial.println(heart_rate);
+        if(abs(heart_rate - last_heart_rate)/heart_rate < 0.1){
+          // update display with heart_rate
+          Serial.println("*");
+        }
+        last_heart_rate = heart_rate;
+        BP_num = random(90, 200);
+        BP_denom = random(60, 120);
+        percent_O2 = pox.getSpO2();
+        
         ble.print( F("AT+BLEUARTTXF=") );
         ble.print("HR");
         ble.print(heart_rate);
         ble.println("|");
-
-        delay(300);
 
         ble.print( F("AT+BLEUARTTXF=") );
         ble.print("BP");
@@ -199,15 +204,11 @@ void loop(void)
         ble.print(BP_denom);
         ble.println("|");
 
-        delay(300);
-
         ble.print( F("AT+BLEUARTTXF=") );
         ble.print("SpO2%");
         ble.print(percent_O2);
         ble.println("|");
-
-        delay(300);
-
+        
         tsLastReport = millis();
     }
     if (strcmp(ble.buffer, "OK") == 0) {
