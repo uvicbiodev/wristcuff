@@ -89,6 +89,9 @@ int BP_num = 0;
 int BP_denom = 0;
 int percent_O2 = 0;
 int last_heart_rate = 0;
+float battery_sensor = 0;
+
+int battery_pin = A1;
 
 // Callback (registered below) fired when a pulse is detected
 void onBeatDetected()
@@ -161,6 +164,8 @@ void setup(void)
     // Initialize the PulseOximeter instance and register a beat-detected callback
     pox.begin();
     pox.setOnBeatDetectedCallback(onBeatDetected);
+
+   pinMode(battery_pin, INPUT);
 }
 
 /**************************************************************************/
@@ -207,6 +212,15 @@ void loop(void)
         ble.print( F("AT+BLEUARTTXF=") );
         ble.print("SpO2%");
         ble.print(percent_O2);
+        ble.println("|");
+
+        ble.print( F("AT+BLEUARTTXF=") );
+        ble.print("Battery%");
+        battery_sensor = analogRead(battery_pin);
+        battery_sensor *= 6.6;
+        battery_sensor /= 1024;
+        battery_sensor = (battery_sensor/4.2)*100;
+        ble.print(battery_sensor);
         ble.println("|");
         
         tsLastReport = millis();
