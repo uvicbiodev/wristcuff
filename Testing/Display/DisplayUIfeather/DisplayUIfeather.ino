@@ -6,9 +6,9 @@
 // Init Display pins
 #define sclk 15
 #define mosi 16
-#define cs   10
-#define dc   9
-#define rst  6 
+#define cs   9
+#define dc   5
+#define rst  0 
 
 //TFT display libraries
 #include <Adafruit_GFX.h>    // Core graphics library
@@ -31,10 +31,10 @@ void setup(){
  
   Serial.begin(9600);      
   
-  tft.initR(INITR_REDTAB);        // initialize a ST7735R chip, orange tab
+  tft.initR(INITR_BLACKTAB);        // initialize a ST7735R chip, orange tab
   tft.setRotation(1);               // rotate the screen 90 degrees
   tft.fillScreen(ST7735_BLACK);     // fill screen black
-
+  
   SplashScreen();                   // display the splashscreen
   MainUI();                         // display the main output UI
   
@@ -51,7 +51,7 @@ void SplashScreen(){
   tft.print("BioDev");
   tft.setTextColor( tft.Color565( 0xFF, 0x77, 0x00) );
   tft.print(" DEMO");
-  //delay(2000);
+  delay(2000);
 
   Serial.println("Drawing biodev logo");
   tft.drawCircle(80,80,40,tft.Color565( 0xFF, 0x77, 0x00));
@@ -61,7 +61,7 @@ void SplashScreen(){
   tft.drawCircle(80,80,44,tft.Color565( 0xFF, 0x77, 0x00));
   tft.fillRect(40,75,80,10, tft.Color565( 0xFF, 0x77, 0x00));
   tft.fillRect(75,40,10,80, tft.Color565( 0xFF, 0x77, 0x0));
-  //delay(4000);
+  delay(4000);
 
 
   // Clear screen
