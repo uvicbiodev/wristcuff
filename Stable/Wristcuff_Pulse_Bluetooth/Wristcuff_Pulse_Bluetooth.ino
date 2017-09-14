@@ -12,7 +12,7 @@
  any redistribution
 *********************************************************************/
 
-#include <Arduino.h>
+//#include <Arduino.h>
 #include <SPI.h>
 #if not defined (_VARIANT_ARDUINO_DUE_X_) && not defined (_VARIANT_ARDUINO_ZERO_)
   #include <SoftwareSerial.h>
@@ -40,7 +40,8 @@
 #include <Adafruit_ST7735.h> // Hardware-specific library
 #include <SPI.h>
 
-Adafruit_ST7735 tft = Adafruit_ST7735(cs, dc, 0);
+
+Adafruit_ST7735 tft = Adafruit_ST7735(cs, dc, rst);
 
 /*=========================================================================
     APPLICATION SETTINGS
@@ -101,12 +102,8 @@ int32_t hrmLocationCharId;
 PulseOximeter pox;
 
 uint32_t tsLastReport = 0;
-int heart_rate = 0;
-//int BP_num = 0;
-//int BP_denom = 0;
-int percent_O2 = 0;
-int last_heart_rate = 0;
-float battery_sensor = 0;
+
+byte last_heart_rate;
 
 byte battery_pin = A1;
 
@@ -130,7 +127,7 @@ void setup(void)
   tft.fillScreen(ST7735_BLACK);     // fill screen black
   
   // Main splash screen outputed on startup
-  /*
+  
   //Serial.println("Splash Title");
   tft.setTextSize(2);
   tft.setCursor(15, 10);
@@ -149,9 +146,8 @@ void setup(void)
   tft.fillRect(40,75,80,10, tft.Color565( 0xFF, 0x77, 0x00));
   tft.fillRect(75,40,10,80, tft.Color565( 0xFF, 0x77, 0x0));
   delay(4000);
-  */
 
-
+  
   // Clear screen
   //Serial.println("Clear screen with BLACK");
   tft.fillScreen(ST7735_BLACK);
@@ -164,15 +160,15 @@ void setup(void)
   
   tft.drawRect(0,1,53,64,tft.Color565( 0x70, 0x80, 0x90));     // SPO2 rectangle outline  
   tft.setCursor(10,5);
-  tft.println("SPO2");
+  tft.print("SPO2");
   
   tft.drawRect(53,1,53,64,tft.Color565( 0x70, 0x80, 0x90));    // BPM rectangle outline
   tft.setCursor(70,5);
-  tft.println("BPM");
+  tft.print("BPM");
   
   tft.drawRect(106,1,53,64,tft.Color565( 0x70, 0x80, 0x90));   // BP rectangle outline
   tft.setCursor(130,5);
-  tft.println("BP");
+  tft.print("BP");
 
 
   tft.drawRect(0,108,80,20,tft.Color565( 0x70, 0x80, 0x90));    // bluetooth rectangle outline
@@ -235,19 +231,18 @@ void setup(void)
   }
 
   //Serial.println("Initializing MAX30100");
-    // Initialize the PulseOximeter instance and register a beat-detected callback
-    pox.begin();
-    pox.setOnBeatDetectedCallback(onBeatDetected);
+  // Initialize the PulseOximeter instance and register a beat-detected callback
+  pox.begin();
+  pox.setOnBeatDetectedCallback(onBeatDetected);
 
+  // battery voltage input pin
   pinMode(battery_pin, INPUT);
   
   
 }
 
 
-
-
-void UpdateDisplayValues(){
+void UpdateDisplayValues(byte BPM, byte SPO2, byte battery){
 
   // we don't want to constantly refresh the entire display
   // so this function will overlay black boxes over the number needing
@@ -257,18 +252,20 @@ void UpdateDisplayValues(){
   tft.setTextColor(ST7735_WHITE);
   
   // Updating SPO2, BPM, and BP
-  tft.fillRect(5,15,40,45,ST7735_BLACK);
+  tft.fillRect(5,15,45,45,ST7735_BLACK);
   tft.setCursor(13,30);
-  String SPO2str = String(percent_O2);
+  char SPO2str[4];
+  sprintf(SPO2str, "%i", SPO2);
   tft.println(SPO2str);
 
   tft.fillRect(60,15,40,45,ST7735_BLACK);
-  String BPMstr = String(heart_rate);
-  if(BPMstr.length() == 3){
+  char BPMstr[4];
+  sprintf(BPMstr,"%i",BPM);
+  //if(BPMstr.length() == 3){
     tft.setCursor(61,30);
-  }else{
-    tft.setCursor(69,30);
-  }
+  //}else{
+    //tft.setCursor(69,30);
+  //}
   tft.println(BPMstr);
 
   /*
@@ -293,10 +290,10 @@ void UpdateDisplayValues(){
   */
 
   // Updating Bluetooth
-  /*
+  
   tft.setTextSize(1);
   tft.fillRect(2,110,76,16,ST7735_BLACK);
-  if(bluetooth == false){
+  if(false/*bluetooth == false*/){
     tft.setCursor(4,114);
     tft.println("Disconnected");
   }
@@ -304,22 +301,19 @@ void UpdateDisplayValues(){
     tft.setCursor(10,114);
     tft.println("Connected");
   }
-  */
+  
   
 
   // Updating battery percentage indicator
-  /*
+  
   tft.fillRect(108,110,48,16,ST7735_BLACK);
   tft.drawRoundRect(115,110,30,15,5,ST7735_WHITE);
   tft.drawRoundRect(145,115,3,5,1,ST7735_WHITE);
-  //tft.setCursor(x,y);
-  //String batstr = String(batteryPercent);
-  //tft.println(batstr);
-  if(battery_sensor > 75){
+  if(battery > 75){
     // draw full battery green
     tft.fillRoundRect( 117, 111, 25, 13, 4,ST7735_GREEN  );
   }
-  else if(battery_sensor > 25){
+  else if(battery > 25){
     // draw half battery yellow
     tft.fillRoundRect( 117, 111, 15, 13, 4,ST7735_YELLOW  );
   }
@@ -327,7 +321,7 @@ void UpdateDisplayValues(){
     // draw empty battery red
     tft.fillRoundRect( 117, 111, 5, 13, 4,ST7735_RED  );
   }
-  */
+  
 
   
 }
@@ -351,19 +345,18 @@ void loop(void)
     // Asynchronously dump heart rate and oxidation levels to the serial
     // For both, a value of 0 means "invalid"
     if (millis() - tsLastReport > REPORTING_PERIOD_MS) {
-        heart_rate = pox.getHeartRate();
+        
+        int battery_sensor = analogRead(battery_pin);
+        battery_sensor *= 6.6;
+        battery_sensor /= 1024;
+        battery_sensor = (battery_sensor/4.2)*100;
+        
+        byte heart_rate = pox.getHeartRate();
         //Serial.println(heart_rate);
         
-        if(abs(heart_rate - last_heart_rate)/heart_rate < 0.1){
-          // update display with heart_rate
-          //Serial.println("*");
-          UpdateDisplayValues();
-        }
-        last_heart_rate = heart_rate;
-        
-        //BP_num = random(90, 200);
-        //BP_denom = random(60, 120);
-        percent_O2 = pox.getSpO2();
+        byte BP_num = random(90, 200);
+        byte BP_denom = random(60, 120);
+        byte percent_O2 = pox.getSpO2();
         
         ble.print( F("AT+BLEUARTTXF=") );
         ble.print("HR");
@@ -383,19 +376,22 @@ void loop(void)
         ble.print(percent_O2);
         ble.println("|");
 
-        /*
+        
         ble.print( F("AT+BLEUARTTXF=") );
         ble.print("Battery%");
-        battery_sensor = analogRead(battery_pin);
-        battery_sensor *= 6.6;
-        battery_sensor /= 1024;
-        battery_sensor = (battery_sensor/4.2)*100;
         ble.print(battery_sensor);
         ble.println("|");
-        */
-        
-        tsLastReport = millis();
 
+
+        if(abs(heart_rate - last_heart_rate)/heart_rate < 0.1){
+          // update display with heart_rate
+          //Serial.println("*");
+          UpdateDisplayValues(heart_rate, percent_O2, battery_sensor);
+        }
+        
+        last_heart_rate = heart_rate;
+         
+        tsLastReport = millis();
         
     }
     if (strcmp(ble.buffer, "OK") == 0) {
